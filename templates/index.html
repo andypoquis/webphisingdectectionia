@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PHISING DETECTION</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!--===============================================================================================-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!--===============================================================================================-->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </head>
+  <body class="bg-[#D7E1DE] text-white">
+    <div class="flex h-screen items-center justify-center">
+      <div class="rounded-lg bg-[#C8D8D2] p-16 shadow-[#C8D8D2] shadow-inner ">
+        <form class="contact2-form validate-form text-center" onsubmit="event.preventDefault(); predictPhishing();">
+          <span class="mb-8 text-4xl font-extrabold leading-none tracking-tight text-[#7D9C91] md:text-4xl lg:text-4xl"> Phishing Website Prediction </span>
+          <div class="wrap-input2 validate-input mb-8 mt-10">
+            <input class="rounded-lg input2 h-10 w-full h-14 p-2 bg-[#72A093] shadow-inner placeholder-[#D5E5E2]" type="text" id="url" required="required" placeholder=" Ingrese la URL a analizar" />
+            <span class="focus-input2"></span>
+          </div>
+
+          <div class="mt-6 flex items-center justify-center">
+            <button class="rounded-full w-full bg-[#030303] shadow-lg leading-5 px-8 py-4 uppercase font-bold tracking-widest text-white inline-block mt-4" type="submit">Predict</button>
+          </div>
+
+          <div class="mt-4 flex hidden items-center justify-center text-[#778480]" id="loading">
+            <svg class="-ml-1 mr-3 h-5 w-5 animate-spin text-[#778480]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647zm10 0l3 2.647A7.962 7.962 0 0020 12h-4a8 8 0 01-3 5.291z"></path>
+            </svg>
+            <p class="text-sm text-[#778480]">Loading...</p>
+          </div>
+
+          <p class="predict mt-8 hidden text-center text-[#778480]" id="result"></p>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      function predictPhishing() {
+
+      	// Obtener la URL ingresada por el usuario
+      	var url = document.getElementById("url").value;
+      	document.getElementById("loading").classList.remove("hidden");
+      	document.getElementById("result").classList.add("hidden");
+      	// Enviar la URL al servidor Flask
+      	fetch('/predict?url=' + url)
+      	.then(response => response.json())
+      	.then(data => {
+      	// Ocultar el icono de carga y mostrar el resultado de la predicción en la página
+      	document.getElementById("loading").classList.add("hidden");
+      	document.getElementById("result").innerHTML = data.result;
+      	document.getElementById("result").classList.remove("hidden");
+      	})
+      	.catch(error => {
+      	console.error('Error:', error);
+      	});
+      	}
+    </script>
+  </body>
+</html>
